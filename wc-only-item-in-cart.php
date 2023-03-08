@@ -3,7 +3,7 @@
  * Plugin Name: Only Item in WooCommerce Cart
  * Plugin URI: 
  * Description: Forces certain products to be purchased as the only item in cart
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Kathy Darling
  * Author URI: http://kathyisawesome.com
  * Requires at least: 5.2.0
@@ -104,9 +104,22 @@ class WC_Only_Item_in_Cart {
      */
     public static function maybe_remove_items( $valid, $product_id, $quantity ) {
 
-        if ( self::is_item_special( $product_id ) && WC()->cart->get_cart_contents_count() > 0 ){
-            self::remove_specials_from_cart();
-        } 
+        if ( self::is_item_special( $product_id ) && WC()->cart->get_cart_contents_count() > 0 ) {
+			/**
+			 * Filters if we set the restriction to only a particular product type(s).
+			 * 
+			 * @param int $product_id
+			 * 
+			 * @since 1.1.0
+			 */
+			$wc_use_special_product_types = apply_filters( 'wc_oiic_enable_only_special_product_types_in_cart', false, $product_id );
+
+			if ( $wc_use_special_product_types ) {
+				self::remove_special_product_types_from_cart();
+			} else {
+				self::remove_specials_from_cart();
+			}
+        }
 
         return $valid;
     }
@@ -136,6 +149,36 @@ class WC_Only_Item_in_Cart {
     }
 
     /**
+    * Removes all special product type(s) from the shopping cart.
+    */
+    public static function remove_special_product_types_from_cart() {
+
+		/**
+		 * Filters which product types this should have an effect on.
+		 * 
+		 * Add an array of types you want. preferably all lowercase letters :).
+		 * 
+		 * @since 1.1.0
+		 */
+		$wc_special_product_types = apply_filters( 'wc_oiic_special_product_types', array() );
+
+		if ( empty( $wc_special_product_types ) ) { // Empty, no need to do anything.
+			return;
+		}
+
+        foreach( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+            if ( self::is_item_special( $cart_item['product_id'] ) && in_array( $cart_item['data']->get_type(), $wc_special_product_types ) {
+                WC()->cart->set_quantity( $cart_item_key, 0 );
+                $product_title = $cart_item['data']->get_title();
+
+                wc_add_notice( sprintf( __( '&quot;%s&quot; has been removed from your cart. It cannot be purchased in conjunction with other products.', 'wc-only-item-in-cart' ), $product_title ), 'error' );
+            }
+
+        }
+
+    }
+
+	/**
     * Removes all special products from the shopping cart.
     */
     public static function remove_specials_from_cart(){
