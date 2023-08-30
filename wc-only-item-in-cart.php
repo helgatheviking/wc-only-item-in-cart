@@ -3,7 +3,7 @@
  * Plugin Name: Only Item in WooCommerce Cart
  * Plugin URI: 
  * Description: Forces certain products to be purchased as the only item in cart
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Kathy Darling
  * Author URI: http://kathyisawesome.com
  * Requires at least: 5.2.0
