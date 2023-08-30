@@ -73,7 +73,7 @@ class WC_Only_Item_in_Cart {
     * Add text inputs to product metabox
     * @since 1.0
     */
-    public static function add_to_wc_metabox(){
+    public static function add_to_wc_metabox() {
         global $post;
 
         echo '<div class="options_group">';
@@ -121,7 +121,7 @@ class WC_Only_Item_in_Cart {
      */
     public static function maybe_remove_items( $valid, $product_id, $quantity ) {
 
-        if ( self::is_item_special( $product_id ) && WC()->cart->get_cart_contents_count() > 0 ){
+        if ( self::is_item_special( $product_id ) && WC()->cart->get_cart_contents_count() > 0 ) {
             self::remove_specials_from_cart();
         } 
 
@@ -155,7 +155,7 @@ class WC_Only_Item_in_Cart {
     /**
     * Removes all special products from the shopping cart.
     */
-    public static function remove_specials_from_cart(){
+    public static function remove_specials_from_cart() {
 
         foreach( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 
@@ -178,7 +178,7 @@ class WC_Only_Item_in_Cart {
      * @param int $product_id
      * @return bool
      */
-    public static function is_item_special( $product_id ){
+    public static function is_item_special( $product_id ) {
         $product = wc_get_product( $product_id );
         return $product && $product->get_meta( '_only_item_in_cart' ) == 'yes' ? true : false;
     }
