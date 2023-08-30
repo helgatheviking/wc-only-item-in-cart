@@ -36,7 +36,10 @@ class WC_Only_Item_in_Cart {
      * @since 1.0
      */
 
-    public static function init() { 
+    public static function init() {
+
+        // Declare HPOS compatibility.
+		add_action( 'before_woocommerce_init', array( __CLASS__, 'declare_hpos_compatibility' ) );
 
         // Product meta.
         add_action( 'woocommerce_product_options_general_product_data', array( __CLASS__, 'add_to_wc_metabox' ) );
@@ -46,6 +49,20 @@ class WC_Only_Item_in_Cart {
         add_filter( 'woocommerce_add_to_cart_validation', array( __CLASS__, 'maybe_remove_items' ), 10, 3 );
 
     }
+
+    /**
+	 * Declare HPOS (Custom Order tables) compatibility.
+	 *
+	 * @since 1.0.1
+	 */
+	public static function declare_hpos_compatibility() {
+
+		if ( ! class_exists( 'Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
+			return;
+		}
+
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', plugin_basename( __FILE__ ), true );
+	}
 
     /*-----------------------------------------------------------------------------------*/
     /* Product Write Panels */
