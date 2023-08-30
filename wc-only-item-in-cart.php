@@ -80,8 +80,8 @@ class WC_Only_Item_in_Cart {
 
         echo woocommerce_wp_checkbox( array(
             'id' => '_only_item_in_cart',
-            'label' => __( 'Only Item In Cart' ) ,
-            'description' => __( 'For special items that need to be purchased individually.', 'wc-only-item-in-cart' )
+            'label' => esc_html__( 'Only Item In Cart' ) ,
+            'description' => esc_html__( 'For special items that need to be purchased individually.', 'wc-only-item-in-cart' )
             )
         );
 
@@ -157,12 +157,15 @@ class WC_Only_Item_in_Cart {
     */
     public static function remove_specials_from_cart(){
 
-        foreach( WC()->cart->get_cart() as $cart_item_key => $cart_item ){
-            if ( self::is_item_special( $cart_item['product_id'] ) ){
-                WC()->cart->set_quantity( $cart_item_key, 0 );
-                $product_title = $cart_item['data']->get_title();
+        foreach( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 
-                wc_add_notice( sprintf( __( '&quot;%s&quot; has been removed from your cart. It cannot be purchased in conjunction with other products.', 'wc-only-item-in-cart' ), $product_title ), 'error' );
+            if ( self::is_item_special( $cart_item['product_id'] ) ) {
+
+                WC()->cart->set_quantity( $cart_item_key, 0 );
+
+                $message = sprintf( esc_html__( '&quot;%s&quot; has been removed from your cart. It cannot be purchased in conjunction with other products.', 'wc-only-item-in-cart' ), $cart_item['data']->get_title() );
+
+                wc_add_notice( $message, 'error' );
             }
 
         }
