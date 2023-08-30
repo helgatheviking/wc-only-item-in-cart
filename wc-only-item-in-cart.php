@@ -165,7 +165,7 @@ class WC_Only_Item_in_Cart {
 
                 $message = sprintf( esc_html__( '&quot;%s&quot; has been removed from your cart. It cannot be purchased in conjunction with other products.', 'wc-only-item-in-cart' ), $cart_item['data']->get_title() );
 
-                wc_add_notice( $message, 'error' );
+                wc_add_notice( $message, 'notice' );
             }
 
         }
